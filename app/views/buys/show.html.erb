@@ -25,7 +25,7 @@
      <script>
     const appId = '<%= Rails.application.credentials.payment_sdk.application_id %>';
     const locationId = '<%= Rails.application.credentials.payment_sdk.location_id %>'; 
-    const displayAmount = '<%= number_to_currency(@catalog_item.amount_cents / 100.0) %>';
+    const amountCents = @catalog_item.amount_cents;
 
     async function initializeCard(payments) {
    const card = await payments.card();
@@ -99,7 +99,7 @@ async function mainRunner() {
     countryCode: 'US',
     currencyCode: 'USD',
     total: {
-      amount: displayAmount,
+      amount: amountCents,
       label: 'Total',
     },
   });

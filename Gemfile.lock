@@ -218,7 +218,6 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.4.2)
     square.rb (18.1.0.20220316)
       certifi (~> 2018.1, >= 2018.01.18)
       faraday (~> 1.0, >= 1.0.1)
@@ -266,7 +265,6 @@ DEPENDENCIES
   rails (~> 7.0.2, >= 7.0.2.3)
   selenium-webdriver
   sprockets-rails
-  sqlite3 (~> 1.4)
   square.rb
   stimulus-rails
   turbo-rails

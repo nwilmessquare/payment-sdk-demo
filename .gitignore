@@ -37,3 +37,5 @@
 /config/credentials/credentials.key
 
 /config/credentials/development.key
+
+/config/credentials/production.key

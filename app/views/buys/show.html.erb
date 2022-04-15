@@ -48,7 +48,7 @@
    }
  }
 
- async function makeCardPayment(token) {
+ async function makePayment(token) {
    const body = JSON.stringify({
      locationId,
      sourceId: token,
@@ -107,14 +107,12 @@ async function mainRunner() {
 
   applePayButton.addEventListener('click', async function () {
     event.preventDefault();
-    try {
-      const result = await applePay.tokenize();
-      if (result.status === 'OK') {
-        console.log(`Payment token is ${result.token}`);
-      }
-    } catch (e) {
-      console.error(e);
-    }
+
+    applePayButton.disabled = true;
+    const token = await tokenize(applePay);
+    const payment = await makePayment(token);
+    console.log(payment);
+    applePayButton.disabled = false;
   });
 }
 

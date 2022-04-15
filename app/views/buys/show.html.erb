@@ -7,6 +7,7 @@
 <p><%= @catalog_item.name %></p>
 <p><%= @catalog_item.description %></p>
 
+<h3>Card Payment</h3>
 
 <form id="payment-form">
    <div id="card-container"></div>
@@ -14,11 +15,17 @@
  </form>
  <div id="payment-status-container"></div>
 
+ <h3>Apple Pay</h3>
+
+<form>
+  <button id="apple-pay-button"></button>
+</form>
 
 <% content_for :javascript do %>
      <script>
     const appId = '<%= Rails.application.credentials.payment_sdk.application_id %>';
     const locationId = '<%= Rails.application.credentials.payment_sdk.location_id %>'; 
+    const displayAmount = '<%= number_to_currency(@catalog_item.amount_cents / 100.0) %>';
 
     async function initializeCard(payments) {
    const card = await payments.card();
@@ -41,7 +48,7 @@
    }
  }
 
- async function makePayment(token) {
+ async function makeCardPayment(token) {
    const body = JSON.stringify({
      locationId,
      sourceId: token,
@@ -84,6 +91,30 @@ async function mainRunner() {
     const payment = await makePayment(token);
     console.log(payment);
     cardButton.disabled = false;
+  });
+
+  const applePayButton = document.querySelector('#apple-pay-button');
+
+  const paymentRequest = payments.paymentRequest({
+    countryCode: 'US',
+    currencyCode: 'USD',
+    total: {
+      amount: displayAmount,
+      label: 'Total',
+    },
+  });
+  const applePay = await payments.applePay(paymentRequest);
+
+  applePayButton.addEventListener('click', async function () {
+    event.preventDefault();
+    try {
+      const result = await applePay.tokenize();
+      if (result.status === 'OK') {
+        console.log(`Payment token is ${result.token}`);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   });
 }
 

@@ -1,0 +1,7 @@
+<h1>Welcome to a terrible demo</h1>
+
+<ul>
+<% @catalog_items.each do |catalog_item| %>
+<li><%= catalog_item.name %> <%= link_to('Buy', buy_path(catalog_item)) %></li>
+<% end %>
+</ul>

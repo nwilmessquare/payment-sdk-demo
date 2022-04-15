@@ -1,0 +1,92 @@
+<h1>Buy page</h1>
+
+<p>Welcome, <%= @user.name %>!</p>
+
+<h2>Item</h2>
+
+<p><%= @catalog_item.name %></p>
+<p><%= @catalog_item.description %></p>
+
+
+<form id="payment-form">
+   <div id="card-container"></div>
+   <button id="card-button" type="button">Pay <%= number_to_currency(@catalog_item.amount_cents / 100.0) %></button>
+ </form>
+ <div id="payment-status-container"></div>
+
+
+<% content_for :javascript do %>
+     <script>
+    const appId = '<%= Rails.application.credentials.payment_sdk.application_id %>';
+    const locationId = '<%= Rails.application.credentials.payment_sdk.location_id %>'; 
+
+    async function initializeCard(payments) {
+   const card = await payments.card();
+   await card.attach('#card-container'); 
+   return card; 
+ }
+
+ async function tokenize(paymentMethod) {
+   const tokenResult = await paymentMethod.tokenize();
+   if (tokenResult.status === 'OK') {
+     return tokenResult.token;
+   } else {
+     let errorMessage = `Tokenization failed-status: ${tokenResult.status}`;
+     if (tokenResult.errors) {
+       errorMessage += ` and errors: ${JSON.stringify(
+         tokenResult.errors
+       )}`;
+     }
+     throw new Error(errorMessage);
+   }
+ }
+
+ async function makePayment(token) {
+   const body = JSON.stringify({
+     locationId,
+     sourceId: token,
+     itemId: <%= @catalog_item.id %>
+   });
+   const paymentResponse = await fetch('/api/payments', {
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json',
+       'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+     },
+     body,
+   });
+   if (paymentResponse.ok) {
+     return paymentResponse.json();
+   }
+   const errorBody = await paymentResponse.text();
+   throw new Error(errorBody);
+ }
+
+async function mainRunner() {
+  console.log("Running DOMContentLoaded event listener");
+
+  if (!window.Square) {
+    throw new Error('Square.js failed to load properly');
+  }
+  const payments = window.Square.payments(appId, locationId);
+  let card;
+  try {
+    card = await initializeCard(payments);
+  } catch (e) {
+    console.error('Initializing Card failed', e);
+    return;
+  }
+
+  const cardButton = document.querySelector('#card-button');
+  cardButton.addEventListener('click', async function () {
+    cardButton.disabled = true;
+    const token = await tokenize(card);
+    const payment = await makePayment(token);
+    console.log(payment);
+    cardButton.disabled = false;
+  });
+}
+
+mainRunner();
+    </script>
+<% end %>

@@ -10,6 +10,7 @@
 <h3>Card Payment</h3>
 
 <form id="payment-form">
+   <div id="apple-pay-button"></div>
    <div id="card-container"></div>
    <button id="card-button" type="button">Pay <%= number_to_currency(@catalog_item.amount_cents / 100.0) %></button>
  </form>
@@ -18,7 +19,6 @@
  <h3>Apple Pay</h3>
 
 <form>
-  <button id="apple-pay-button"></button>
 </form>
 
 <% content_for :javascript do %>
@@ -119,3 +119,17 @@ async function mainRunner() {
 mainRunner();
     </script>
 <% end %>
+
+<% content_for :css do %>
+<style>
+   #apple-pay-button {
+     height: 48px;
+     width: 100%;
+     display: inline-block;
+     -webkit-appearance: -apple-pay-button;
+     -apple-pay-button-type: plain;
+     -apple-pay-button-style: black;
+   }
+ </style>
+
+<% end >

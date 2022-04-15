@@ -109,11 +109,14 @@ async function mainRunner() {
     console.log('Clicking on the apple pay button');
     event.preventDefault();
 
-    applePayButton.disabled = true;
+    // applePayButton.disabled = true;
     const token = await tokenize(applePay);
+    console.log('Token result');
+    console.log(token);
     const payment = await makePayment(token);
+    console.log('Payment result');
     console.log(payment);
-    applePayButton.disabled = false;
+    // applePayButton.disabled = false;
   });
 }
 

@@ -25,7 +25,7 @@
      <script>
     const appId = '<%= Rails.application.credentials.payment_sdk.application_id %>';
     const locationId = '<%= Rails.application.credentials.payment_sdk.location_id %>'; 
-    const amountCents = <%= @catalog_item.amount_cents %>;
+    const displayAmount = '<%= number_with_precision(@catalog_item.amount_cents/100.0, precision: 2) %>';
 
     async function initializeCard(payments) {
    const card = await payments.card();

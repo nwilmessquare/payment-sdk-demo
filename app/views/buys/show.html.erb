@@ -105,9 +105,9 @@ async function mainRunner() {
   });
   const applePay = await payments.applePay(paymentRequest);
 
-  applePayButton.addEventListener('click', async function () {
-    console.log('Clicking on the apple pay button');
+  applePayButton.addEventListener('click', async function (event) {
     event.preventDefault();
+    console.log('Clicking on the apple pay button');
 
     // applePayButton.disabled = true;
     const token = await tokenize(applePay);

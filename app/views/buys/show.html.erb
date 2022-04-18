@@ -34,16 +34,8 @@
  }
 
  async function tokenize(paymentMethod) {
-   console.log('Running tokenize2');
-   console.log(paymentMethod);
-   try {
-     const tokenResult = await paymentMethod.tokenize();
-   }
-   catch(e) {
-     console.log("Tokenize error");
-     console.log(e);
-   }
-   console.log('Got tokenResult');
+   console.log('Running tokenize');
+   const tokenResult = await paymentMethod.tokenize();
    if (tokenResult.status === 'OK') {
      return tokenResult.token;
    } else {
@@ -58,6 +50,7 @@
  }
 
  async function makePayment(token) {
+   console.log('Running payment API call');
    const body = JSON.stringify({
      locationId,
      sourceId: token,
@@ -79,8 +72,6 @@
  }
 
 async function mainRunner() {
-  console.log("Running DOMContentLoaded event listener");
-
   if (!window.Square) {
     throw new Error('Square.js failed to load properly');
   }

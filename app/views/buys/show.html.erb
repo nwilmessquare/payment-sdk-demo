@@ -30,6 +30,11 @@
   <button id="gift-card-button" type="button">Pay with Gift Card</button>
 </form>
 
+<h3>Afterpay</h3>
+<form>
+  <button id="afterpay-button" type="button">Afterpay</button>
+</form>
+
 <% content_for :javascript do %>
      <script>
     const appId = '<%= Rails.application.credentials.payment_sdk.application_id %>';
@@ -80,6 +85,15 @@
    throw new Error(errorBody);
  }
 
+  async function eventHandler(event, paymentMethod, paymentMethodDesc, paymentMethodParams) {
+    event.preventDefault();
+    console.log(`Clicking on the ${paymentMethodDesc}`);
+    const token = await tokenize(paymentMethod, paymentMethodParams);
+    const payment = await makePayment(token);
+    console.log('Payment result');
+    console.log(payment);
+  });
+
 async function mainRunner() {
   if (!window.Square) {
     throw new Error('Square.js failed to load properly');
@@ -94,11 +108,9 @@ async function mainRunner() {
   }
 
   const cardButton = document.querySelector('#card-button');
-  cardButton.addEventListener('click', async function () {
+  cardButton.addEventListener('click', async function (event) {
     cardButton.disabled = true;
-    const token = await tokenize(card);
-    const payment = await makePayment(token);
-    console.log(payment);
+    eventHandler(event, card, 'card form');
     cardButton.disabled = false;
   });
 
@@ -115,48 +127,49 @@ async function mainRunner() {
   const applePay = await payments.applePay(paymentRequest);
 
   applePayButton.addEventListener('click', async function (event) {
-    event.preventDefault();
-    console.log('Clicking on the apple pay button');
-
-    // applePayButton.disabled = true;
-    const token = await tokenize(applePay);
-    console.log('Token result');
-    console.log(token);
-    const payment = await makePayment(token);
-    console.log('Payment result');
-    console.log(payment);
-    // applePayButton.disabled = false;
+    return eventHandler(event, applePay, 'apple pay button');
   });
 
   const ach = await payments.ach();
   const achButton = document.querySelector('#ach-button');
   achButton.addEventListener('click', async function (event) {
-    event.preventDefault();
-    console.log('Clicking on the ACH button');
-
-    const token = await tokenize(ach, { accountHolderName: 'John Doe' });
-    console.log('Token result');
-    console.log(token);
-    const payment = await makePayment(token);
-    console.log('Payment result');
-    console.log(payment);
+    return eventHandler(event, ach, 'ACH button', { accountHolderName: 'John Doe' });
   });
 
   const giftCard = await payments.giftCard();
   await giftCard.attach('#gift-card-container');
   const giftCardButton = document.querySelector('#gift-card-button');
   giftCardButton.addEventListener('click', async function (event) {
-    event.preventDefault();
-    console.log('Clicking on the gift card button');
-
-    const token = await tokenize(giftCard);
-    console.log('Token result');
-    console.log(token);
-    const payment = await makePayment(token);
-    console.log('Payment result');
-    console.log(payment);
+    return eventHandler(event, giftCard, 'gift card button');
   });
 
+  paymentRequest.addEventListener('afterpay_shippingaddresschanged', function (contact) {
+      return {
+        shippingOptions: [
+          {
+            id: 'FREE',
+            amount: '0.00',
+            label: 'Free',
+            taxLineItems: [
+              {
+                id: 'taxItem1',
+                label: 'Taxes',
+                amount: '3.50',
+              }
+            ],
+            total: {
+              amount: '9.29',
+              label: 'Total'
+            }
+          }
+        ],
+      }
+    });
+  const afterpay = await payments.afterpayClearpay(paymentRequest);
+  const afterpayButton = document.querySelector('#afterpay-button');
+  afterpayButton.addEventListener('click', async function (event) {
+    return eventHandler(event, afterpay, 'afterpay button');
+  });
 }
 
 mainRunner();

@@ -24,6 +24,12 @@
   <button id="ach-button" type="button">Pay with Bank Account</button>
 </form>
 
+<h3>Gift Card</h3>
+<form>
+  <div id="gift-card-container"></div>
+  <button id="gift-card-button" type="button">Pay with Gift Card</button>
+</form>
+
 <% content_for :javascript do %>
      <script>
     const appId = '<%= Rails.application.credentials.payment_sdk.application_id %>';
@@ -137,7 +143,7 @@ async function mainRunner() {
   });
 
   const giftCard = await payments.giftCard();
-  await giftCard.attach('#gift-card');
+  await giftCard.attach('#gift-card-container');
   const giftCardButton = document.querySelector('#gift-card-button');
   giftCardButton.addEventListener('click', async function (event) {
     event.preventDefault();

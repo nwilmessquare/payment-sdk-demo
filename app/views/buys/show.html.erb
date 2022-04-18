@@ -10,9 +10,9 @@
 <h3>Card Payment</h3>
 
 <form id="payment-form">
-   <div id="apple-pay-button"></div>
    <div id="card-container"></div>
-   <button id="card-button" type="button">Pay <%= number_to_currency(@catalog_item.amount_cents / 100.0) %></button>
+   <button id="card-button" type="button">Pay <%= number_to_currency(@catalog_item.amount_cents / 100.0) %> with a credit card</button>
+   <div id="apple-pay-button"></div>
  </form>
  <div id="payment-status-container"></div>
 
@@ -76,22 +76,22 @@ async function mainRunner() {
     throw new Error('Square.js failed to load properly');
   }
   const payments = window.Square.payments(appId, locationId);
-  // let card;
-  // try {
-  //   card = await initializeCard(payments);
-  // } catch (e) {
-  //   console.error('Initializing Card failed', e);
-  //   return;
-  // }
+  let card;
+  try {
+    card = await initializeCard(payments);
+  } catch (e) {
+    console.error('Initializing Card failed', e);
+    return;
+  }
 
-  // const cardButton = document.querySelector('#card-button');
-  // cardButton.addEventListener('click', async function () {
-  //   cardButton.disabled = true;
-  //   const token = await tokenize(card);
-  //   const payment = await makePayment(token);
-  //   console.log(payment);
-  //   cardButton.disabled = false;
-  // });
+  const cardButton = document.querySelector('#card-button');
+  cardButton.addEventListener('click', async function () {
+    cardButton.disabled = true;
+    const token = await tokenize(card);
+    const payment = await makePayment(token);
+    console.log(payment);
+    cardButton.disabled = false;
+  });
 
   const applePayButton = document.querySelector('#apple-pay-button');
 

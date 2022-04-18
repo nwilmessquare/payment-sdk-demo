@@ -8,17 +8,20 @@
 <p><%= @catalog_item.description %></p>
 
 <h3>Card Payment</h3>
-
 <form id="payment-form">
-   <div id="card-container"></div>
-   <button id="card-button" type="button">Pay <%= number_to_currency(@catalog_item.amount_cents / 100.0) %> with a credit card</button>
- </form>
- <div id="payment-status-container"></div>
+  <div id="card-container"></div>
+  <button id="card-button" type="button">Pay <%= number_to_currency(@catalog_item.amount_cents / 100.0) %> with a credit card</button>
+</form>
+<div id="payment-status-container"></div>
 
- <h3>Apple Pay</h3>
-  <div id="apple-pay-button"></div>
-
+<h3>Apple Pay</h3>
 <form>
+  <div id="apple-pay-button"></div>
+</form>
+
+<h3>Bank Account</h3>
+<form>
+  <button id="ach-button" type="button">Pay with Bank Account</button>
 </form>
 
 <% content_for :javascript do %>
@@ -33,9 +36,9 @@
    return card; 
  }
 
- async function tokenize(paymentMethod) {
+ async function tokenize(paymentMethod, args) {
    console.log('Running tokenize');
-   const tokenResult = await paymentMethod.tokenize();
+   const tokenResult = await paymentMethod.tokenize(args);
    if (tokenResult.status === 'OK') {
      return tokenResult.token;
    } else {
@@ -117,6 +120,20 @@ async function mainRunner() {
     console.log('Payment result');
     console.log(payment);
     // applePayButton.disabled = false;
+  });
+
+  const ach = await payments.ach();
+  const achButton = document.querySelector('#ach-button');
+  achButton.addEventListener('click', async function (event) {
+    event.preventDefault();
+    console.log('Clicking on the ACH button');
+
+    const token = await tokenize(ach, { accountHolderName: 'John Doe' });
+    console.log('Token result');
+    console.log(token);
+    const payment = await makePayment(token);
+    console.log('Payment result');
+    console.log(payment);
   });
 }
 

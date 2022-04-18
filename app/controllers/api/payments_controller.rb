@@ -8,8 +8,7 @@ module Api
 
       client = Square::Client.new(
         access_token: Rails.application.credentials.payment_sdk.access_token,
-        environment: 'sandbox',
-        timeout: 1
+        environment: 'sandbox'
       )
 
       payment_body = {

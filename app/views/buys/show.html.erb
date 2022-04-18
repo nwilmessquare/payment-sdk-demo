@@ -135,6 +135,22 @@ async function mainRunner() {
     console.log('Payment result');
     console.log(payment);
   });
+
+  const giftCard = await payments.giftCard();
+  await giftCard.attach('#gift-card');
+  const giftCardButton = document.querySelector('#gift-card-button');
+  giftCardButton.addEventListener('click', async function (event) {
+    event.preventDefault();
+    console.log('Clicking on the gift card button');
+
+    const token = await tokenize(giftCard);
+    console.log('Token result');
+    console.log(token);
+    const payment = await makePayment(token);
+    console.log('Payment result');
+    console.log(payment);
+  });
+
 }
 
 mainRunner();

@@ -36,7 +36,13 @@
  async function tokenize(paymentMethod) {
    console.log('Running tokenize');
    console.log(paymentMethod);
-   const tokenResult = await paymentMethod.tokenize();
+   try {
+     const tokenResult = await paymentMethod.tokenize();
+   }
+   catch(e) {
+     console.log("Tokenize error");
+     console.log(e);
+   }
    console.log('Got tokenResult');
    if (tokenResult.status === 'OK') {
      return tokenResult.token;

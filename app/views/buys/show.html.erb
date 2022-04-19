@@ -36,6 +36,11 @@
   <button id="afterpay-button" type="button">Afterpay</button>
 </form>
 
+<h3>Google Pay</h3>
+<form>
+  <div id="apple-pay-button"></div>
+</form>
+
 <% content_for :javascript do %>
      <script>
     const appId = '<%= Rails.application.credentials.payment_sdk.application_id %>';
@@ -171,6 +176,21 @@ async function mainRunner() {
   const afterpayButton = document.querySelector('#afterpay-button');
   afterpayButton.addEventListener('click', async function (event) {
     return eventHandler(event, afterpay, 'afterpay button');
+  });
+
+  const googlePayRequest = payments.paymentRequest({
+    countryCode: 'US',
+    currencyCode: 'USD',
+    total: {
+      amount: displayAmount,
+      label: 'Total',
+    },
+  }    
+  });
+  const googlePay = await payments.googlePay(googlePayRequest);
+  const googlePayButton = document.querySelector('#google-pay-button');
+  googlePayButton.addEventListener('click', async function (event) {
+    return eventHandler(event, googlePay, 'Google Pay button');
   });
 }
 

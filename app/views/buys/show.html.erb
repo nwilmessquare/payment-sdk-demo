@@ -45,7 +45,7 @@
      <script>
     const appId = '<%= Rails.application.credentials.payment_sdk.application_id %>';
     const locationId = '<%= Rails.application.credentials.payment_sdk.location_id %>'; 
-    const itemAmount = @catalog_item.amount_cents / 100.0;
+    const itemAmount = <%= @catalog_item.amount_cents / 100.0 %>;
 
     async function initializeCard(payments) {
    const card = await payments.card();

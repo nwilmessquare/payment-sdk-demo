@@ -183,24 +183,19 @@ async function mainRunner() {
   });
 
   const lineItemsForShippingOption = (shippingOption) => {
+    const shippingAmount = parseFloat(shippingOption.amount);
     return {
       lineItems: [
         { amount: displayAmount(itemAmount), label: 'Item Cost' },
-        { amount: displayAmount(shippingOption.amount), label: 'Shipping' },
+        { amount: displayAmount(shippingAmount), label: shippingOption.label },
       ],
       total: {
-        amount: displayAmount(itemAmount + shippingOption.amount),
+        amount: displayAmount(itemAmount + shippingAmount,
         label: 'Total',
       }
     };
   };
 
-
-  let shippingAmount = 0;
-  let lineItems = [
-    { amount: displayAmount(itemAmount), label: 'Item Cost' },
-    { amount: displayAmount(shippingAmount), label: 'Shipping' },
-  ];
   const googlePayRequest = payments.paymentRequest(Object.assign({
     countryCode: 'US',
     currencyCode: 'USD',
@@ -209,7 +204,7 @@ async function mainRunner() {
       { amount: '0.00', id: 'shipping-option-1', label: 'Free' },
       { amount: '10.00', id: 'shipping-option-2', label: 'Expedited' },
     ]
-  }, lineItemsForShippingOption({ amount: 0 })
+  }, lineItemsForShippingOption({ amount: '0.00', id: 'shipping-option-1', label: 'Free' })
   ));
   googlePayRequest.addEventListener('shippingoptionchanged', (option) => {
     console.log(option);

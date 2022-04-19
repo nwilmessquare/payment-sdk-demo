@@ -209,7 +209,8 @@ async function mainRunner() {
       { amount: '0.00', id: 'shipping-option-1', label: 'Free' },
       { amount: '10.00', id: 'shipping-option-2', label: 'Expedited' },
     ]
-  }, lineItemsForShippingOption({ amount: 0 }));
+  }, lineItemsForShippingOption({ amount: 0 })
+  ));
   googlePayRequest.addEventListener('shippingoptionchanged', (option) => {
     console.log(option);
     return lineItemsForShippingOption(option);

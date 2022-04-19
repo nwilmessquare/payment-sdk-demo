@@ -185,7 +185,6 @@ async function mainRunner() {
       amount: displayAmount,
       label: 'Total',
     },
-  }    
   });
   const googlePay = await payments.googlePay(googlePayRequest);
   const googlePayButton = document.querySelector('#google-pay-button');

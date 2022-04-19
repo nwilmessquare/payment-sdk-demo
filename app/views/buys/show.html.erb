@@ -116,7 +116,7 @@ async function mainRunner() {
 
   const applePayButton = document.querySelector('#apple-pay-button');
 
-  const paymentRequest = payments.paymentRequest({
+  const applePayRequest = payments.paymentRequest({
     countryCode: 'US',
     currencyCode: 'USD',
     total: {
@@ -124,7 +124,7 @@ async function mainRunner() {
       label: 'Total',
     },
   });
-  const applePay = await payments.applePay(paymentRequest);
+  const applePay = await payments.applePay(applePayRequest);
 
   applePayButton.addEventListener('click', async function (event) {
     return eventHandler(event, applePay, 'apple pay button');
@@ -165,7 +165,16 @@ async function mainRunner() {
         ],
       }
     });
-  const afterpay = await payments.afterpayClearpay(paymentRequest);
+  const afterpayRequest = payments.paymentRequest({
+    countryCode: 'US',
+    currencyCode: 'USD',
+    total: {
+      amount: displayAmount,
+      label: 'Total',
+    },
+    requestShippingContact: true,
+  });
+  const afterpay = await payments.afterpayClearpay(afterpayRequest);
   const afterpayButton = document.querySelector('#afterpay-button');
   afterpayButton.addEventListener('click', async function (event) {
     return eventHandler(event, afterpay, 'afterpay button');

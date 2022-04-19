@@ -157,18 +157,9 @@ async function mainRunner() {
       return {
         shippingOptions: [
           {
-            id: 'FREE',
-            amount: '0.00',
-            label: 'Free',
-            taxLineItems: [
-              {
-                id: 'taxItem1',
-                label: 'Taxes',
-                amount: '3.50',
-              }
-            ],
+            taxLineItems: [],
             total: {
-              amount: '9.29',
+              amount: displayAmount,
               label: 'Total'
             }
           }

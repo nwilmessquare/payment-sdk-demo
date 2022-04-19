@@ -120,21 +120,21 @@ async function mainRunner() {
     cardButton.disabled = false;
   });
 
-  const applePayButton = document.querySelector('#apple-pay-button');
+  // const applePayButton = document.querySelector('#apple-pay-button');
 
-  const applePayRequest = payments.paymentRequest({
-    countryCode: 'US',
-    currencyCode: 'USD',
-    total: {
-      amount: displayAmount,
-      label: 'Total',
-    },
-  });
-  const applePay = await payments.applePay(applePayRequest);
+  // const applePayRequest = payments.paymentRequest({
+  //   countryCode: 'US',
+  //   currencyCode: 'USD',
+  //   total: {
+  //     amount: displayAmount,
+  //     label: 'Total',
+  //   },
+  // });
+  // const applePay = await payments.applePay(applePayRequest);
 
-  applePayButton.addEventListener('click', async function (event) {
-    return eventHandler(event, applePay, 'apple pay button');
-  });
+  // applePayButton.addEventListener('click', async function (event) {
+  //   return eventHandler(event, applePay, 'apple pay button');
+  // });
 
   const ach = await payments.ach();
   const achButton = document.querySelector('#ach-button');
@@ -187,6 +187,7 @@ async function mainRunner() {
     },
   });
   const googlePay = await payments.googlePay(googlePayRequest);
+  await googlePay.attach('#google-pay-button');
   const googlePayButton = document.querySelector('#google-pay-button');
   googlePayButton.addEventListener('click', async function (event) {
     return eventHandler(event, googlePay, 'Google Pay button');

@@ -32,6 +32,7 @@
 
 <h3>Afterpay</h3>
 <form>
+  <div id="afterpay-container"></div>
   <button id="afterpay-button" type="button">Afterpay</button>
 </form>
 
@@ -175,6 +176,7 @@ async function mainRunner() {
       }
     });
   const afterpay = await payments.afterpayClearpay(afterpayRequest);
+  await afterpay.attach("#afterpay-container");
   const afterpayButton = document.querySelector('#afterpay-button');
   afterpayButton.addEventListener('click', async function (event) {
     return eventHandler(event, afterpay, 'afterpay button');
